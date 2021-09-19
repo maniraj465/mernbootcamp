@@ -1,11 +1,11 @@
 const crypto = require('crypto');
-const uuidv1 = require('uuid/v1');
-import mongoose from 'mongoose';
+const { uuidv1 } = require('uuid');
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userSchema = new Schema(
     {
-        name: {
+        firstName: {
             type: String,
             required: true,
             maxlength: 32,
@@ -32,10 +32,10 @@ const userSchema = new Schema(
         },
         salt: String,
         role: {
-            type: Number,
-            default: 0
+            type: String,
+            default: 'User'
         },
-        puchases: {
+        purchases: {
             type: Array,
             default: []
         }
@@ -44,16 +44,16 @@ const userSchema = new Schema(
 );
 
 userSchema.virtual('password')
-.getters(function() {
+.get(function() {
     return this._password;
 })
-.setter(function(password) {
+.set(function(password) {
     this._password = password;
     this.salt = uuidv1();
     this.encryptPassword = this.encryptPassword(password);
 });
 
-userSchema.method = {
+userSchema.methods = {
     authendicate: function(plainPassword) {
         return this.encryptPassword(plainPassword) === this.encryptedPassword;
     },

@@ -26,9 +26,7 @@ mongoose.connect(MONGO_DB_URL + MONGO_DB_PORT + MONGO_DB_TABLE_NAME, {
 
 // Middlewares
 app.use(express.json());
-app.use(express.urlencoded({
-    extended: true
-}));
+app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(cors());
 

@@ -86,8 +86,27 @@ exports.signOut = (req, res) => {
 // protected routes
 exports.isSignedIn = expressJwt({
     secret: process.env.SECRET,
-    algorithms: ['RS256'],
+    algorithms: ['HS256'],
+    // algorithms: ['RS256'],
     userProperty: "auth"
 });
 
 // custom middlewares
+exports.isAuthenticated = (req, res, next) => {
+    const checker = req.profile && req.auth && req.profile._id === req.auth._id;
+    if (!checker) {
+        return res.statud(403).json({
+            error: 'ACCESS DENIED'
+        });
+    }
+    next();
+}
+
+exports.isAdmin = (req, res, next) => {
+    if (req.profile.role === 0) {
+        return res.statud(403).json({
+            error: 'You are not an admin.'
+        });
+    }
+    next();
+}
